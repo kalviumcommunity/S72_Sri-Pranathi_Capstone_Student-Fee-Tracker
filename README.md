@@ -5,7 +5,7 @@
 ## Idea Brief 💡
 Managing student fee records is a crucial yet challenging task for educational institutions. Traditional methods often lead to inefficiencies, errors, and time-consuming manual work. Our *Student Fee Tracker* aims to provide an *efficient, accurate, and user-friendly* solution that streamlines fee management, ensures *real-time data updates, and offers **insightful visualizations* to administrators.
 
-This project leverages *MongoDB, Chart.js, Express.js, and GetSimple CMS* to automate fee tracking, enhance data security, and offer dynamic visual representations. By integrating *automated data updates, secure cloud storage, and a graphical dashboard*, institutions can significantly improve their financial record management.
+This project leverages *MongoDB, Chart.js, Express.js, and Drupal CMS* to automate fee tracking, enhance data security, and offer dynamic visual representations. By integrating *automated data updates, secure cloud storage, and a graphical dashboard*, institutions can significantly improve their financial record management.
 
 ---
 
@@ -25,7 +25,7 @@ Many educational institutions still rely on spreadsheets and manual record-keepi
    - Administrators can easily *analyze financial trends*, compare fee collection over different time periods, and identify anomalies.
 
 ### 3️⃣ *Content Management System (CMS) Integration 📝*
-   - *GetSimple CMS* is incorporated to provide an *easy-to-use interface* for administrators to *manage and update fee-related content*.
+   - *Drupal CMS* is incorporated to provide an *easy-to-use interface* for administrators to *manage and update fee-related content*.
    - Ensures *non-technical users* can handle fee records without needing extensive database knowledge.
 
 ### 4️⃣ *Scalability & Security 🔒*
@@ -70,7 +70,7 @@ Many educational institutions still rely on spreadsheets and manual record-keepi
   - Refine UI components for enhanced user experience.
 
 - *Day 6:*
-  - Implement *GetSimple CMS* for easy admin management of fee records.
+  - Implement *Drupal CMS* for easy admin management of fee records.
   - Ensure *multi-user authentication with access control levels*.
   - Begin security enhancements (data encryption, API security measures).
 
@@ -103,7 +103,7 @@ Many educational institutions still rely on spreadsheets and manual record-keepi
 - *Frontend:* JavaScript (with Chart.js for visualization)
 - *Backend:* Node.js with Express.js
 - *Database:* MongoDB (Compass for local storage, Atlas for cloud integration)
-- *CMS:* GetSimple CMS
+- *CMS:* Drupal CMS
 
 ---
 
