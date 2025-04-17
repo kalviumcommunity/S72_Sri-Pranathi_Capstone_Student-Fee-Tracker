@@ -108,4 +108,16 @@ router.get("/girls", async (req, res) => {
     }
 });
 
+// **POST - Add a New Student**
+router.post('/', async (req, res) => {
+    try {
+        const newStudent = new Student(req.body);
+        await newStudent.save();
+        res.status(201).json({ message: 'Student added successfully', student: newStudent });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to add student' });
+    }
+});
+
+
 module.exports = router;
