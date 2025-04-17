@@ -119,5 +119,18 @@ router.post('/', async (req, res) => {
     }
 });
 
+// **PUT - Update a Student by ID**
+router.put('/:id', async (req, res) => {
+    try {
+        const updatedStudent = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedStudent) {
+            return res.status(404).json({ error: 'Student not found' });
+        }
+        res.json({ message: 'Student updated successfully', student: updatedStudent });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update student' });
+    }
+});
+
 
 module.exports = router;
