@@ -23,6 +23,10 @@ mongoose.connect('mongodb+srv://sripranathiindupalli:studentfeetracker@capi.eqhj
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB:', err));
 
+  app.get("/", (req, res) => {
+    res.send("Backend is working! 🚀");
+  });
+
 // **Use Student Routes**
 app.use('/students', studentRoutes);
 app.use('/auth', authRoutes);
