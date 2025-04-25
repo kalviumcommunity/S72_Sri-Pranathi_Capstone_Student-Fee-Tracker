@@ -108,6 +108,52 @@ router.get("/girls", async (req, res) => {
     }
 });
 
+// AI-powered suggestions endpoint
+router.post('/suggestions', async (req, res) => {
+    try {
+      const { query } = req.body;
+      
+      if (!query) {
+        return res.status(400).json({ error: 'Query is required' });
+      }
+  
+      const searchRegex = new RegExp(query, 'i');
+  
+      // Get matches from all fields
+      const matches = await Student.find({
+        $or: [
+          { firstName: searchRegex },
+          { lastName: searchRegex },
+          { college: searchRegex },
+          { transactionId: searchRegex }
+        ]
+      }).limit(10);
+  
+      // Extract and deduplicate suggestions
+      const suggestions = new Set();
+      matches.forEach(student => {
+        // Check each field and add if it matches the search term
+        if (searchRegex.test(student.firstName)) {
+          suggestions.add(student.firstName);
+        }
+        if (searchRegex.test(student.lastName)) {
+          suggestions.add(student.lastName);
+        }
+        if (searchRegex.test(student.college)) {
+          suggestions.add(student.college.trim());
+        }
+        if (searchRegex.test(student.transactionId)) {
+          suggestions.add(student.transactionId);
+        }
+      });
+  
+      res.json(Array.from(suggestions).slice(0, 5));
+    } catch (error) {
+      console.error('Error generating suggestions:', error);
+      res.status(500).json({ error: 'Failed to generate suggestions' });
+      }
+  });
+  
 // **POST - Add a New Student**
 router.post('/', async (req, res) => {
     try {
