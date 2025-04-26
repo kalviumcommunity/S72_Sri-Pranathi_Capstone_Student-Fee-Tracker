@@ -1,0 +1,15 @@
+meta {
+  name: Get request-all
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:5000/students/all
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
