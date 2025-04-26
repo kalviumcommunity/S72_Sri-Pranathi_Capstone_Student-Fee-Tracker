@@ -9,11 +9,18 @@ const userSchema = new mongoose.Schema({
     },
     Password: {
         type: String,
-        required: true
+        required: function() {
+            return !this.googleId; // Password is required only if not a Google user
+        }
     },
     Admins: {
+        type: Boolean,
+        default: false
+    },
+    googleId: {
         type: String,
-        required: true
+        unique: true,
+        sparse: true // Allows null values for non-Google users
     }
 }, { collection: 'Admin Users' });
 
@@ -30,4 +37,4 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+module.exports = User; 
