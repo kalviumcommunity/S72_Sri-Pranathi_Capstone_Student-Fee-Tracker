@@ -108,6 +108,7 @@ router.get("/girls", async (req, res) => {
     }
 });
 
+
 // AI-powered suggestions endpoint
 router.post('/suggestions', async (req, res) => {
     try {
