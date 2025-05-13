@@ -96,4 +96,4 @@ const EditProfile = ({ isOpen, onClose, user, onSave }) => {
   );
 };
 
-export default EditProfile; 
+export default EditProfile;
