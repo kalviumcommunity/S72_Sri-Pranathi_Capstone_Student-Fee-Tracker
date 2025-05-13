@@ -9,13 +9,13 @@ const EditProfile = ({ isOpen, onClose, user, onSave }) => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const fileInputRef = useRef(null);
 
-  useEffect(() => {
-    if (isOpen && user) {
-      setName(user.name || '');
-      setPreviewUrl(user.profilePicture || null);
-      setProfilePicture(null); // Reset file input
-    }
-  }, [isOpen, user]);
+    useEffect(() => {
+        if (isOpen && user) {
+            setName(user.name || '');
+            setPreviewUrl(user.profilePicture || null);
+            setProfilePicture(null);
+        }
+    }, [isOpen, user]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
