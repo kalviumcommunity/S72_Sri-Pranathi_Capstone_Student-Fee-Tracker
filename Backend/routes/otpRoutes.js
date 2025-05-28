@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const {sendOTP}  = require('../config/twilio');
 
 // Generate a random 6-digit OTP
 const generateOTP = () => {
@@ -46,25 +47,36 @@ router.post('/login-init', async (req, res) => {
       });
     }
 
-    // Generate OTP and store it
+    // Generate OTP
     const otp = generateOTP();
-    userInstance.tempOTP = {
-      code: otp,
-      expiry: Date.now() + 300000 // 5 minutes
-    };
+    
+    // Send OTP via Twilio
+    try {
+      await sendOTP(user.phoneNumber, otp);
+    } catch (smsError) {
+      console.error('SMS sending failed:', smsError);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to send OTP. Please try again.'
+      });
+    }
 
-    // Save only the OTP update
+    // Store OTP in user document
     await User.updateOne(
       { "Email id": email },
-      { $set: { tempOTP: userInstance.tempOTP } }
+      { 
+        $set: { 
+          tempOTP: {
+            code: otp,
+            expiry: Date.now() + 300000 // 5 minutes
+          }
+        } 
+      }
     );
-
-    console.log('Generated OTP:', otp);
 
     res.json({
       success: true,
-      message: 'OTP generated successfully',
-      otp: otp // Remove in production
+      message: 'OTP sent successfully to your registered phone number'
     });
 
   } catch (error) {
