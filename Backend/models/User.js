@@ -13,6 +13,11 @@ const userSchema = new mongoose.Schema({
             return !this.googleId; // Password is required only if not a Google user
         }
     },
+    phoneNumber: {
+        type: String,
+        required: true,
+        unique: true
+    },
     Admins: {
         type: Boolean,
         default: false
@@ -21,6 +26,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         unique: true,
         sparse: true // Allows null values for non-Google users
+    },
+    tempOTP: {
+        code: String,
+        expiry: Date
     }
 }, { collection: 'Admin Users' });
 
