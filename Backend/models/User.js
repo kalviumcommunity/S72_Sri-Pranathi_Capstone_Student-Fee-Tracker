@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
     "Email id": {
@@ -13,35 +12,25 @@ const userSchema = new mongoose.Schema({
             return !this.googleId; // Password is required only if not a Google user
         }
     },
-    phoneNumber: {
-        type: String,
-        required: true,
-        unique: true
-    },
     Admins: {
-        type: Boolean,
-        default: false
+        type: String,
+        default: "admin"
     },
     googleId: {
         type: String,
         unique: true,
         sparse: true // Allows null values for non-Google users
     },
-    tempOTP: {
-        code: String,
-        expiry: Date
+    name: {
+        type: String,
+        required: false
     }
 }, { collection: 'Admin Users' });
 
 // Method to compare password
-userSchema.methods.comparePassword = async function(candidatePassword) {
-    try {
-        // For plain text password comparison
-        return this.Password === candidatePassword;
-    } catch (error) {
-        console.error('Password comparison error:', error);
-        throw error;
-    }
+userSchema.methods.comparePassword = function(candidatePassword) {
+    // Direct string comparison since passwords are stored as plain text
+        return candidatePassword === this.Password;
 };
 
 const User = mongoose.model('User', userSchema);
