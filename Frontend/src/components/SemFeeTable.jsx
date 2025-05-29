@@ -3,19 +3,38 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import '../styles/SemFeeTable.css';
 import AutoCompleteSearch from './AutoCompleteSearch';
 import { FaSearch } from 'react-icons/fa';
+import api from '../utils/api';
 
 const SemFeeTable = ({ selectedMonth = null, selectedCollege = null }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [students, setStudents] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const itemsPerPage = 10;
   const [searchFields] = useState(['firstName', 'lastName', 'transactionId', 'college']);
+  const [lastUpdate, setLastUpdate] = useState('');
 
   useEffect(() => {
-    fetch("http://localhost:5000/students/all")
-      .then((res) => res.json())
-      .then((data) => setStudents(data))
-      .catch((err) => console.error("Error fetching data:", err));
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [studentsResponse, updateResponse] = await Promise.all([
+          api.get('/students/all'),
+          api.get('/students/last-updated')
+        ]);
+        
+        setStudents(studentsResponse.data);
+        setLastUpdate(updateResponse.data.lastModified);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const filteredStudents = useMemo(() => {
@@ -24,7 +43,7 @@ const SemFeeTable = ({ selectedMonth = null, selectedCollege = null }) => {
       // Filter by college if selected
       if (selectedCollege) {
         filtered = filtered.filter(student => 
-          student?.college?.toLowerCase() === selectedCollege.toLowerCase()
+          student?.['College']?.toLowerCase() === selectedCollege.toLowerCase()
         );
       }
       
@@ -32,10 +51,10 @@ const SemFeeTable = ({ selectedMonth = null, selectedCollege = null }) => {
       if (searchTerm) {
         const searchLower = searchTerm.toLowerCase();
         filtered = filtered.filter(student => {
-          const firstName = student?.firstName || '';
-          const lastName = student?.lastName || '';
-          const transactionId = student?.transactionId || '';
-          const college = student?.college || '';
+          const firstName = student?.['First Name'] || '';
+          const lastName = student?.['Last Name'] || '';
+          const transactionId = student?.['Transaction id'] || '';
+          const college = student?.['College'] || '';
           return firstName.toLowerCase().includes(searchLower) ||
                  lastName.toLowerCase().includes(searchLower) ||
                  transactionId.toString().includes(searchLower) ||
@@ -86,7 +105,7 @@ const SemFeeTable = ({ selectedMonth = null, selectedCollege = null }) => {
             {selectedCollege && <span> - {selectedCollege}</span>}
           </h2>
           <p className="semfee-table-date">
-            Last updated: {new Date().toLocaleDateString()}
+          Last updated: {lastUpdate}
           </p>
         </div>
         <div className="semfee-table-search">
@@ -116,24 +135,24 @@ const SemFeeTable = ({ selectedMonth = null, selectedCollege = null }) => {
           <tbody>
             {currentStudents.length > 0 ? (
               currentStudents.map((student, index) => (
-                <tr key={student.transactionId || index} className="semfee-table-row">
-                  <td className="semfee-table-cell">{student.uploadDate || "N/A"}</td>
-                  <td className="semfee-table-cell">{student.dateOfPayment || "N/A"}</td>
-                  <td className="semfee-table-cell">{student.transactionId || "N/A"}</td>
-                  <td className="semfee-table-cell font-semibold">{student.firstName || "N/A"}</td>
-                  <td className="semfee-table-cell font-semibold">{student.lastName || "N/A"}</td>
-                  <td className="semfee-table-cell">{student.college || "N/A"}</td>
+                <tr key={student._id || index} className="semfee-table-row">
+                  <td className="semfee-table-cell">{student['Upload date'] || "N/A"}</td>
+                  <td className="semfee-table-cell">{student['Date of payment'] || "N/A"}</td>
+                  <td className="semfee-table-cell">{student['Transaction id'] || "N/A"}</td>
+                  <td className="semfee-table-cell font-semibold">{student['First Name'] || "N/A"}</td>
+                  <td className="semfee-table-cell font-semibold">{student['Last Name'] || "N/A"}</td>
+                  <td className="semfee-table-cell">{student['College'] || "N/A"}</td>
                   <td>
-                    {student?.feePaid ? (
-                      <span className={`tenk-badge ${student.feePaid.toLowerCase() === 'yes' ? 'yes' : 'no'}`}>
-                        {student.feePaid}
+                    {student?.['10K'] ? (
+                      <span className={`tenk-badge ${student['10K'].toLowerCase() === 'yes' ? 'yes' : 'no'}`}>
+                        {student['10K']}
                       </span>
                     ) : '-'}
                   </td>
                   <td>
-                    {typeof student?.semFee === 'string' ? (
-                      <span className={`sem-badge ${student.semFee.trim().toLowerCase() === 'yes' ? 'yes' : 'no'}`}>
-                        {student.semFee}
+                    {typeof student?.['Sem Fee'] === 'string' ? (
+                      <span className={`sem-badge ${student['Sem Fee'].trim().toLowerCase() === 'yes' ? 'yes' : 'no'}`}>
+                        {student['Sem Fee']}
                       </span>
                     ) : '-'}
                   </td>
